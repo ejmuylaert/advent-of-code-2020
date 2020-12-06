@@ -41,6 +41,14 @@ public class Slope {
         return trees;
     }
 
+    public long treeEncounterMultiplication() {
+        return treeEncounter(1, 1) *
+                treeEncounter(3, 1) *
+                treeEncounter(5, 1) *
+                treeEncounter(7, 1) *
+                treeEncounter(1, 2);
+    }
+
     private boolean isTree(String line, int x) {
         int length = line.length();
         x = x % length;

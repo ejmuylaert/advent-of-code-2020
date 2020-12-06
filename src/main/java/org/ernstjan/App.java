@@ -49,6 +49,9 @@ public class App {
 
         Slope slope = new Slope(lines);
         int trees = slope.treeEncounter(3, 1);
+        long mult = slope.treeEncounterMultiplication();
         System.out.println("Answer (encountered trees)  : " + trees);
+        System.out.println("Answer (multiplication)  : " + mult);
+
     }
 }
