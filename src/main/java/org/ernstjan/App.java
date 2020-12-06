@@ -22,7 +22,9 @@ public class App {
         }
 
         int answer = ReportRepair.find(numbers);
+        long answer_triple = ReportRepair.find_triple(numbers);
 
-        System.out.println("Answer: " + answer);
+        System.out.println("Answer (pair)  : " + answer);
+        System.out.println("Answer (triple): " + answer_triple);
     }
 }
