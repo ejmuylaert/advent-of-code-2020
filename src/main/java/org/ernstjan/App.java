@@ -37,7 +37,9 @@ public class App {
         URL url = App.class.getClassLoader().getResource("day2_input.txt");
         List<String> lines = Files.readAllLines(Path.of(url.toURI()));
 
-        long validCount = PasswordValidator.countValid(lines);
-        System.out.println("Answer (valid count)  : " + validCount);
+        long validRentalCount = PasswordValidator.countValidRental(lines);
+        long validTobogganCount = PasswordValidator.countValidToboggan(lines);
+        System.out.println("Answer (valid rental count)  : " + validRentalCount);
+        System.out.println("Answer (valid Toboggan count)  : " + validTobogganCount);
     }
 }
