@@ -2,6 +2,7 @@ package org.ernstjan;
 
 import org.ernstjan.advent.day1.ReportRepair;
 import org.ernstjan.advent.day2.PasswordValidator;
+import org.ernstjan.advent.day3.Slope;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,5 +42,13 @@ public class App {
         long validTobogganCount = PasswordValidator.countValidToboggan(lines);
         System.out.println("Answer (valid rental count)  : " + validRentalCount);
         System.out.println("Answer (valid Toboggan count)  : " + validTobogganCount);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day3_input-first_line_skipped.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        Slope slope = new Slope(lines);
+        int trees = slope.treeEncounter(3, 1);
+        System.out.println("Answer (encountered trees)  : " + trees);
     }
 }
