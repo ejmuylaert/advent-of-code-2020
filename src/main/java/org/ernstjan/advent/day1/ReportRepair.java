@@ -1,6 +1,7 @@
 package org.ernstjan.advent.day1;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class ReportRepair {
@@ -23,10 +24,10 @@ public class ReportRepair {
         }
     }
 
-    static public int find(int[] numbers) {
-        Optional<Integer> match = Arrays.stream(numbers)
-                .boxed()
-                .flatMap(one -> Arrays.stream(numbers).boxed().map(two -> new Pair(one, two)))
+    static public int find(List<Integer> numbers) {
+
+        Optional<Integer> match = numbers.stream()
+                .flatMap(one -> numbers.stream().map(two -> new Pair(one, two)))
                 .filter(Pair::isMatch)
                 .map(Pair::product)
                 .findFirst();

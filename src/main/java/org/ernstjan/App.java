@@ -21,7 +21,7 @@ public class App {
             }
         }
 
-        int answer = ReportRepair.find(numbers.stream().mapToInt(Integer::intValue).toArray());
+        int answer = ReportRepair.find(numbers);
 
         System.out.println("Answer: " + answer);
     }
