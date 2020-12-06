@@ -12,7 +12,7 @@ class SlopeTest {
     void sampleValidation() {
 
         List<String> map = List.of(
-//                "..##.......",
+                "..##.......",
                 "#...#...#..",
                 ".#....#..#.",
                 "..#.#...#.#",

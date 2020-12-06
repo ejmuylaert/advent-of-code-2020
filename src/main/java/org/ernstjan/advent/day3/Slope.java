@@ -25,17 +25,18 @@ public class Slope {
     }
 
     public int treeEncounter(int right, int down) {
-        Position pos = new Position(0, 0);
+        int slopeLength = map.size();
         int trees = 0;
 
-        for (String line : map) {
-            pos = pos.move(right, down);
-            System.out.println(line);
-
+        Position pos = new Position(0, 0);
+        do {
+            String line = map.get(pos.y);
             if (isTree(line, pos.x)) {
                 trees++;
             }
-        }
+            pos = pos.move(right, down);
+
+        } while (slopeLength > pos.y);
 
         return trees;
     }

@@ -44,7 +44,7 @@ public class App {
         System.out.println("Answer (valid Toboggan count)  : " + validTobogganCount);
 
         /* --- */
-        url = App.class.getClassLoader().getResource("day3_input-first_line_skipped.txt");
+        url = App.class.getClassLoader().getResource("day3_input.txt");
         lines = Files.readAllLines(Path.of(url.toURI()));
 
         Slope slope = new Slope(lines);
