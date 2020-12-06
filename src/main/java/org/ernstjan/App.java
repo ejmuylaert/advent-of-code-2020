@@ -3,6 +3,7 @@ package org.ernstjan;
 import org.ernstjan.advent.day1.ReportRepair;
 import org.ernstjan.advent.day2.PasswordValidator;
 import org.ernstjan.advent.day3.Slope;
+import org.ernstjan.advent.day4.PassportDatabase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,5 +54,15 @@ public class App {
         System.out.println("Answer (encountered trees)  : " + trees);
         System.out.println("Answer (multiplication)  : " + mult);
 
+        /* --- */
+        url = App.class.getClassLoader().getResource("day4_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        PassportDatabase passportDatabase = new PassportDatabase();
+        passportDatabase.addPassports(lines);
+        int passports = passportDatabase.size();
+        long validPassports = passportDatabase.validPassports();
+        System.out.println("Answer (valid passports)  : " + passports);
+        System.out.println("Answer (validated passports)  : " + validPassports);
     }
 }
