@@ -4,6 +4,7 @@ import org.ernstjan.advent.day1.ReportRepair;
 import org.ernstjan.advent.day2.PasswordValidator;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
+import org.ernstjan.advent.day5.Plane;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,5 +65,16 @@ public class App {
         long validPassports = passportDatabase.validPassports();
         System.out.println("Answer (valid passports)  : " + passports);
         System.out.println("Answer (validated passports)  : " + validPassports);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day5_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        Plane plane = new Plane();
+        plane.addSeats(lines);
+        int id = plane.highestSeatId();
+        int availableId = plane.availableSeat();
+        System.out.println("Answer (highest seat id)  : " + id);
+        System.out.println("Answer (available seat id)  : " + availableId);
     }
 }
