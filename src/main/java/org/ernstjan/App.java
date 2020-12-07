@@ -5,6 +5,7 @@ import org.ernstjan.advent.day2.PasswordValidator;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.Plane;
+import org.ernstjan.advent.day6.CustomsDeclaration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,5 +77,15 @@ public class App {
         int availableId = plane.availableSeat();
         System.out.println("Answer (highest seat id)  : " + id);
         System.out.println("Answer (available seat id)  : " + availableId);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day6_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        CustomsDeclaration declaration = new CustomsDeclaration();
+        int sum = declaration.declare(lines);
+        long allSum = declaration.declareCommon(lines);
+        System.out.println("Answer (sum)  : " + sum);
+        System.out.println("Answer (common)  : " + allSum);
     }
 }
