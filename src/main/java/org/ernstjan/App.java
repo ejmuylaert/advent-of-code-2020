@@ -6,6 +6,7 @@ import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.Plane;
 import org.ernstjan.advent.day6.CustomsDeclaration;
+import org.ernstjan.advent.day7.Graph;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,5 +88,16 @@ public class App {
         long allSum = declaration.declareCommon(lines);
         System.out.println("Answer (sum)  : " + sum);
         System.out.println("Answer (common)  : " + allSum);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day7_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        Graph graph = new Graph();
+        graph.read(lines);
+        long possibilities = graph.possibilities("shiny gold bag");
+        long containing = graph.contains("shiny gold bag");
+        System.out.println("Answer (gold bag possibilities)  : " + possibilities);
+        System.out.println("Answer (gold bag containing)  : " + containing);
     }
 }
