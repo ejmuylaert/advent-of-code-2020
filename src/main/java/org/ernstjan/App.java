@@ -7,6 +7,8 @@ import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.Plane;
 import org.ernstjan.advent.day6.CustomsDeclaration;
 import org.ernstjan.advent.day7.Graph;
+import org.ernstjan.advent.day8.Computer;
+import org.ernstjan.advent.day8.Debugger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -99,5 +101,17 @@ public class App {
         long containing = graph.contains("shiny gold bag");
         System.out.println("Answer (gold bag possibilities)  : " + possibilities);
         System.out.println("Answer (gold bag containing)  : " + containing);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day8_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        Computer computer = new Computer(lines);
+        computer.run();
+        int accumulator = computer.getAccumulator();
+        Debugger debugger = new Debugger(lines);
+        int fixed = debugger.fix();
+        System.out.println("Answer (accumulator) :" + accumulator);
+        System.out.println("Answer (fixed) :" + fixed);
     }
 }
