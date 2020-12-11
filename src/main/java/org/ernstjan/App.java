@@ -9,6 +9,7 @@ import org.ernstjan.advent.day6.CustomsDeclaration;
 import org.ernstjan.advent.day7.Graph;
 import org.ernstjan.advent.day8.Computer;
 import org.ernstjan.advent.day8.Debugger;
+import org.ernstjan.advent.day9.Decrypt;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -113,5 +114,15 @@ public class App {
         int fixed = debugger.fix();
         System.out.println("Answer (accumulator) :" + accumulator);
         System.out.println("Answer (fixed) :" + fixed);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day9_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+        Decrypt decrypt = Decrypt.fromLines(lines, 25);
+        long l = decrypt.firstError();
+        long weak = decrypt.weakness();
+
+        System.out.println("Answer (decrypt) :" + l);
+        System.out.println("Answer (weakness) :" + weak);
     }
 }
