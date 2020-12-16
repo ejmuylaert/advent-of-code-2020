@@ -1,6 +1,7 @@
 package org.ernstjan;
 
 import org.ernstjan.advent.day1.ReportRepair;
+import org.ernstjan.advent.day10.Adapter;
 import org.ernstjan.advent.day2.PasswordValidator;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
@@ -124,5 +125,14 @@ public class App {
 
         System.out.println("Answer (decrypt) :" + l);
         System.out.println("Answer (weakness) :" + weak);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day10_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+        long jolts = Adapter.calculate(lines);
+        long combinations = Adapter.combinations(lines);
+
+        System.out.println("Answer (jolts) :" + jolts);
+        System.out.println("Answer (combinations) :" + combinations);
     }
 }
