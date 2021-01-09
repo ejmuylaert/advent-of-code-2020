@@ -3,6 +3,9 @@ package org.ernstjan;
 import org.ernstjan.advent.day1.ReportRepair;
 import org.ernstjan.advent.day10.Adapter;
 import org.ernstjan.advent.day11.WaitingAreaPlan;
+import org.ernstjan.advent.day12.Boat;
+import org.ernstjan.advent.day12.WaypointBoat;
+import org.ernstjan.advent.day13.Departure;
 import org.ernstjan.advent.day2.PasswordValidator;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
@@ -144,5 +147,26 @@ public class App {
         long iterationsNoFloor = WaitingAreaPlan.simulateNoFloor(lines);
         System.out.println("Answer (iterations) :" + iterations);
         System.out.println("Answer (no floor) :" + iterationsNoFloor);
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day12_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        Boat boat = new Boat();
+        boat.move(lines);
+        int distance = boat.manhattanDistance();
+
+        WaypointBoat waypointBoat = new WaypointBoat();
+        waypointBoat.move(lines);
+
+        System.out.println("Answer (distance) :" + distance);
+        System.out.println("Answer (waypoint distance) :" + waypointBoat.manhattanDistance());
+
+        /* --- */
+        url = App.class.getClassLoader().getResource("day13_input.txt");
+        lines = Files.readAllLines(Path.of(url.toURI()));
+
+        System.out.println("Answer (answer) :" + Departure.answer(lines));
+//        System.out.println("Answer (departure time) :" + Departure.answer(lines.get(1)));
     }
 }
