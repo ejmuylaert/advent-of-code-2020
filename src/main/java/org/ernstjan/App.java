@@ -40,8 +40,9 @@ public class App {
             }
         }
 
-        int answer = ReportRepair.find(numbers);
-        long answer_triple = ReportRepair.find_triple(numbers);
+        ReportRepair reportRepair = new ReportRepair(2020);
+        long answer = reportRepair.findPair(numbers).get();
+        long answer_triple = reportRepair.findTriple(numbers).get();
 
         System.out.println("Answer (pair)  : " + answer);
         System.out.println("Answer (triple): " + answer_triple);
