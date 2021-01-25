@@ -1,12 +1,15 @@
 package org.ernstjan;
 
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.ernstjan.advent.day1.ReportRepair;
 import org.ernstjan.advent.day10.Adapter;
 import org.ernstjan.advent.day11.WaitingAreaPlan;
 import org.ernstjan.advent.day12.Boat;
 import org.ernstjan.advent.day12.WaypointBoat;
 import org.ernstjan.advent.day13.Departure;
-import org.ernstjan.advent.day2.PasswordValidator;
+import org.ernstjan.advent.day2.PasswordFileParser;
+import org.ernstjan.advent.day2.PasswordLine;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.Plane;
@@ -49,16 +52,16 @@ public class App {
 
         /* --- */
         URL url = App.class.getClassLoader().getResource("day2_input.txt");
-        List<String> lines = Files.readAllLines(Path.of(url.toURI()));
 
-        long validRentalCount = PasswordValidator.countValidRental(lines);
-        long validTobogganCount = PasswordValidator.countValidToboggan(lines);
-        System.out.println("Answer (valid rental count)  : " + validRentalCount);
-        System.out.println("Answer (valid Toboggan count)  : " + validTobogganCount);
+        CharStream inputStream = CharStreams.fromPath(Path.of(url.toURI()));
+        List<PasswordLine> passwordLines = PasswordFileParser.parse(inputStream);
+
+        System.out.println("Answer (valid rental count)  : " + PasswordLine.countValid(passwordLines, PasswordLine::isValidRental));
+        System.out.println("Answer (valid Toboggan count)  : " + PasswordLine.countValid(passwordLines, PasswordLine::isValidToboggan));
 
         /* --- */
         url = App.class.getClassLoader().getResource("day3_input.txt");
-        lines = Files.readAllLines(Path.of(url.toURI()));
+        List<String> lines = Files.readAllLines(Path.of(url.toURI()));
 
         Slope slope = new Slope(lines);
         int trees = slope.treeEncounter(3, 1);
