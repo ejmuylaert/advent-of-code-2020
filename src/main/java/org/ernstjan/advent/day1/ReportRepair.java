@@ -34,23 +34,15 @@ public class ReportRepair {
         Flux<Tuple2<ImmutableSet<Long>, ImmutableList<Integer>>> listStream = indexedNumbersStream(numbers);
 
         for (int i = 1; i < numberOfEntries; i++) {
-            listStream = listStream.flatMap(indexedList -> {
-                ImmutableSet<Long> indices = indexedList.getT1();
-                ImmutableList<Integer> values = indexedList.getT2();
-
-                return indexedNumbersStream(numbers)
-                        .map(indexedListToMerge -> {
-                            ImmutableSet<Long> indicesToMerge = indexedListToMerge.getT1();
-                            ImmutableList<Integer> valuesToMerge = indexedListToMerge.getT2();
-
-                            return Tuples.of(
-                                    ImmutableSet.<Long>builder().addAll(indices).addAll(indicesToMerge).build(),
-                                    ImmutableList.<Integer>builder().addAll(values).addAll(valuesToMerge).build());
-                        });
-            });
+            listStream = listStream.flatMap(indexedList ->
+                    indexedNumbersStream(numbers)
+                            .map(indexedListToMerge -> Tuples.of(
+                                    ImmutableSet.<Long>builder().addAll(indexedList.getT1()).addAll(indexedListToMerge.getT1()).build(),
+                                    ImmutableList.<Integer>builder().addAll(indexedList.getT2()).addAll(indexedListToMerge.getT2()).build())));
         }
 
         return listStream
+                // skip, when numbers where fetched form the same input position
                 .filter(indicesValues -> indicesValues.getT1().size() == numberOfEntries)
                 .map(Tuple2::getT2)
                 .map(l -> l.toArray(Integer[]::new))
