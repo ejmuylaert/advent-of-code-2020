@@ -23,4 +23,11 @@ public class Entries {
                 .mapToLong(Integer::longValue)
                 .reduce(1L, (a, b) -> a * b);
     }
+
+    @Override
+    public String toString() {
+        return "Entries{" +
+                "numbers=" + numbers +
+                '}';
+    }
 }

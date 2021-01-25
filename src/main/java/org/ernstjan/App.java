@@ -41,8 +41,8 @@ public class App {
         }
 
         ReportRepair reportRepair = new ReportRepair(2020);
-        long answer = reportRepair.findPair(numbers).get();
-        long answer_triple = reportRepair.findTriple(numbers).get();
+        long answer = reportRepair.find(2, numbers).get();
+        long answer_triple = reportRepair.find(3, numbers).get();
 
         System.out.println("Answer (pair)  : " + answer);
         System.out.println("Answer (triple): " + answer_triple);
