@@ -10,6 +10,7 @@ import org.ernstjan.advent.day12.WaypointBoat;
 import org.ernstjan.advent.day13.Departure;
 import org.ernstjan.advent.day2.PasswordFileParser;
 import org.ernstjan.advent.day2.PasswordLine;
+import org.ernstjan.advent.day3.Delta;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.Plane;
@@ -63,9 +64,16 @@ public class App {
         url = App.class.getClassLoader().getResource("day3_input.txt");
         List<String> lines = Files.readAllLines(Path.of(url.toURI()));
 
+
+
         Slope slope = new Slope(lines);
-        int trees = slope.treeEncounter(3, 1);
-        long mult = slope.treeEncounterMultiplication();
+        int trees = slope.treeEncounter(new Delta(3, 1));
+        List<Delta> travels = List.of(new Delta(1, 1),
+                new Delta(3, 1),
+                new Delta(5, 1),
+                new Delta(7, 1),
+                new Delta(1, 2));
+        long mult = slope.treeEncountersProduct(travels);
         System.out.println("Answer (encountered trees)  : " + trees);
         System.out.println("Answer (multiplication)  : " + mult);
 
