@@ -20,7 +20,7 @@ public class Departure {
                 .min(Comparator.comparingInt(o -> o.waitingTime))
                 .orElseThrow();
 
-        System.out.println(fastest);
+//        System.out.println(fastest);
         return fastest.multiplied();
     }
 
@@ -45,16 +45,16 @@ public class Departure {
                 break;
             }
 
-            System.out.println(currentTime);
+//            System.out.println(currentTime);
         }
 
-        System.out.println("offset: " + highest.offset);
-        System.out.println("number: " + highest.lineNumber);
-        System.out.println("Is valid: " + highest.isValid(highest.offset + highest.lineNumber));
+//        System.out.println("offset: " + highest.offset);
+//        System.out.println("number: " + highest.lineNumber);
+//        System.out.println("Is valid: " + highest.isValid(highest.offset + highest.lineNumber));
 
         long l = 100000000000000L;
-        System.out.println(l);
-        System.out.println(Long.MAX_VALUE);
+//        System.out.println(l);
+//        System.out.println(Long.MAX_VALUE);
         return time;
     }
 

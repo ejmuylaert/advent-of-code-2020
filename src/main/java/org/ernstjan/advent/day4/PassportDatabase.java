@@ -1,68 +1,43 @@
 package org.ernstjan.advent.day4;
 
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.Optional;
 
 public class PassportDatabase {
-    private final List<Passport> passports = new LinkedList<>();
 
-    public void addPassports(List<String> lines) {
-        PassportBuilder passportBuilder = new PassportBuilder();
-        for (String line : lines) {
-            if (line.isBlank()) {
-                passportBuilder
-                        .createPassport()
-                        .ifPresent(passports::add);
+    private final LinkedList<Passport> passports = new LinkedList<>();
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-                passportBuilder = new PassportBuilder();
-            }
-            Scanner lineScanner = new Scanner(line);
-            while (lineScanner.hasNext()) {
-                String field = lineScanner.next();
-                Scanner fieldScanner = new Scanner(field).useDelimiter(":");
-                switch (fieldScanner.next()) {
-                    case "byr":
-                        passportBuilder.setBirthYear(fieldScanner.nextInt());
-                        break;
-                    case "iyr":
-                        passportBuilder.setIssueYear(fieldScanner.nextInt());
-                        break;
-                    case "eyr":
-                        passportBuilder.setExpirationYear(fieldScanner.nextInt());
-                        break;
-                    case "hgt":
-                        passportBuilder.setHeight(fieldScanner.next());
-                        break;
-                    case "hcl":
-                        passportBuilder.setHairColor(fieldScanner.next());
-                        break;
-                    case "ecl":
-                        passportBuilder.setEyeColor(fieldScanner.next());
-                        break;
-                    case "pid":
-                        passportBuilder.setPassportId(fieldScanner.next());
-                        break;
-                    case "cid":
-                        passportBuilder.setCountryId(fieldScanner.next());
-                        break;
-                }
-            }
-        }
+    public void addPassports(CharStream inputStream) {
+        PassportLexer lexer = new PassportLexer(inputStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 
-        passportBuilder
-                .createPassport()
-                .ifPresent(passports::add);
+
+        PassportParser parser = new PassportParser(tokenStream);
+
+        PassportParser.PassportsContext tree = parser.passports();
+        PassportFileVisitor visitor = new PassportFileVisitor();
+
+        LinkedList<Passport.PassportBuilder> builders = visitor.visit(tree);
+        builders.stream()
+                .map(Passport.PassportBuilder::build)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(passports::add);
     }
 
     public int size() {
         return passports.size();
     }
 
-    public long validPassports() {
-        return passports
-                .stream()
-                .filter(Passport::isValid)
+    public long numberOfValidPassports() {
+        return passports.stream()
+                .filter(passport -> validator.validate(passport).size() == 0)
                 .count();
     }
 }

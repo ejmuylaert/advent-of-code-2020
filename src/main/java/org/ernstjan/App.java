@@ -65,7 +65,6 @@ public class App {
         List<String> lines = Files.readAllLines(Path.of(url.toURI()));
 
 
-
         Slope slope = new Slope(lines);
         int trees = slope.treeEncounter(new Delta(3, 1));
         List<Delta> travels = List.of(new Delta(1, 1),
@@ -79,12 +78,11 @@ public class App {
 
         /* --- */
         url = App.class.getClassLoader().getResource("day4_input.txt");
-        lines = Files.readAllLines(Path.of(url.toURI()));
-
+        inputStream = CharStreams.fromPath(Path.of(url.toURI()));
         PassportDatabase passportDatabase = new PassportDatabase();
-        passportDatabase.addPassports(lines);
+        passportDatabase.addPassports(inputStream);
         int passports = passportDatabase.size();
-        long validPassports = passportDatabase.validPassports();
+        long validPassports = passportDatabase.numberOfValidPassports();
         System.out.println("Answer (valid passports)  : " + passports);
         System.out.println("Answer (validated passports)  : " + validPassports);
 
