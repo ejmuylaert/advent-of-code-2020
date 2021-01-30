@@ -13,6 +13,7 @@ import org.ernstjan.advent.day2.PasswordLine;
 import org.ernstjan.advent.day3.Delta;
 import org.ernstjan.advent.day3.Slope;
 import org.ernstjan.advent.day4.PassportDatabase;
+import org.ernstjan.advent.day5.BoardingPass;
 import org.ernstjan.advent.day5.Plane;
 import org.ernstjan.advent.day6.CustomsDeclaration;
 import org.ernstjan.advent.day7.Graph;
@@ -109,8 +110,8 @@ public class App implements CommandLineRunner {
         lines = Files.readAllLines(Path.of(url.toURI()));
 
         Plane plane = new Plane();
-        plane.addSeats(lines);
-        int id = plane.highestSeatId();
+        plane.board(BoardingPass.fromCodes(lines));
+        long id = plane.highestSeatId();
         int availableId = plane.availableSeat();
         System.out.println("Answer (highest seat id)  : " + id);
         System.out.println("Answer (available seat id)  : " + availableId);

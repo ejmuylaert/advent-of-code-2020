@@ -1,12 +1,18 @@
 package org.ernstjan.advent.day5;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BoardingPass {
 
     private final int row;
     private final int column;
 
+    public static List<BoardingPass> fromCodes(List<String> codes) {
+        return codes.stream()
+                .map(BoardingPass::new)
+                .collect(Collectors.toList());
+    }
 
     public BoardingPass(String code) {
         row = partition(code.substring(0, 7), 127);
@@ -43,45 +49,5 @@ public class BoardingPass {
 
     public int id() {
         return 8 * row + column;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BoardingPass boardingPass = (BoardingPass) o;
-        return row == boardingPass.row &&
-                column == boardingPass.column;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, column);
-    }
-
-    private static class Range {
-        private final int low;
-        private final int high;
-
-        Range(int low, int high) {
-            this.low = low;
-            this.high = high;
-        }
-
-        Range lowerHalf() {
-            int half = (high - low) / 2;
-            return new Range(low, low + half);
-        }
-
-        Range upperHalf() {
-            int half = (high - low) / 2;
-            return new Range(high - half, high);
-        }
-
-        int value() {
-            if (low != high) throw new IllegalStateException("Value is only valid when low & high are equal");
-
-            return low;
-        }
     }
 }

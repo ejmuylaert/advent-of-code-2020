@@ -1,38 +1,40 @@
 package org.ernstjan.advent.day5;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Plane {
 
-    private final LinkedList<BoardingPass> seats = new LinkedList<>();
+    /**
+     * Ordered list of seat ids;
+     */
+    private List<Integer> occupiedSeats = new LinkedList<>();
 
-    public void addSeats(List<String> lines) {
-        lines.forEach(l -> seats.add(new BoardingPass(l)));
-    }
-
-    public int highestSeatId() {
-        return seats
-                .stream()
+    public void board(List<BoardingPass> boardingPasses) {
+        occupiedSeats = boardingPasses.stream()
                 .map(BoardingPass::id)
-                .reduce(0, Math::max);
+                .sorted()
+                .collect(Collectors.toList());
     }
 
+    public long highestSeatId() {
+        return occupiedSeats.get(occupiedSeats.size() - 1);
+    }
+
+    /**
+     * Find the seat where both neighbouring seats are occupied.
+     *
+     * @return id of the available seat
+     */
     public int availableSeat() {
-        List<BoardingPass> boardingPasses = this.seats
-                .stream()
-                .sorted(Comparator.comparingInt(BoardingPass::id))
-                .collect(Collectors.toList());
-
-
-        BoardingPass prev = boardingPasses.remove(0);
-        for (BoardingPass current : boardingPasses) {
-            if (prev.id() + 2 == current.id()) {
-                return prev.id() + 1;
+        Integer previous = occupiedSeats.get(0);
+        for (int i = 1; i < occupiedSeats.size(); i++) {
+            Integer current = occupiedSeats.get(i);
+            if (current - previous == 2) {
+                return previous + 1;
             }
-            prev = current;
+            previous = current;
         }
 
         throw new RuntimeException("No empty seat found!");
