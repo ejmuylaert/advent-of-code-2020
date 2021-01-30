@@ -5,20 +5,59 @@ passports: passport+;
 passport: field+ (NL* | EOF);
 
 // Grab optional newline after field, so it won't count as separator between passports
-field: 'byr' ':' NUMBER NL?   # BirthYear
-     | 'iyr' ':' NUMBER NL?    # IssueYear
-     | 'eyr' ':' NUMBER NL?    # ExpirationYear
-     | 'hgt' ':' NUMBER UNIT NL?     # Height
-     | 'hcl' ':' COLOR_HEX NL? # HairColor
-     | 'ecl' ':' COLOR_NAME NL? # EyeColor
-     | 'pid' ':' (DIGITS | NUMBER) NL?     # PassportId
-     | 'cid' ':' (DIGITS | NUMBER) NL?    # CountryId
+field: 'byr' ':' birthYear NL?          # birthYearLabel
+     | 'iyr' ':' issueYear NL?          # issueYearLabel
+     | 'eyr' ':' expirationYear NL?     # expirationYearLabel
+     | 'hgt' ':' height NL?             # heightLabel
+     | 'hcl' ':' hairColor NL?          # hairColorLabel
+     | 'ecl' ':' eyeColor NL?           # eyeColorLabel
+     | 'pid' ':' passportId NL?         # passportIdLabel
+     | 'cid' ':' countryId NL?          # countryIdLabel
      ;
 
+// A wrong value can be a combination of numbers (or digits) and text, this value
+// will be parsed as 2 tokens, this is the reason for the '+' in 'any+'
+birthYear   : NUMBER
+            | any+
+            ;
+
+issueYear   : NUMBER
+            | any+
+            ;
+
+expirationYear  : NUMBER
+                | any+
+                ;
+
+height  : HEIGHT
+        | any+
+        ;
+
+
+hairColor   : HEX_COLOR
+            | any+
+            ;
+
+eyeColor    : COLOR_NAME
+            | any+
+            ;
+
+passportId  : (DIGITS | NUMBER)
+            | any+
+            ;
+
+countryId   : (DIGITS | NUMBER)
+            | any+
+            ;
+
+any: (UNIT | NUMBER | DIGITS | HEX_COLOR | COLOR_NAME | HEIGHT | STRING);
+
+HEIGHT: NUMBER UNIT;
 UNIT: 'cm' | 'in';
 NUMBER: [1-9][0-9]*;
 DIGITS: [0-9]+;
-COLOR_HEX: '#'[0-9a-f]+;
-COLOR_NAME: [a-z]+;
+HEX_COLOR: '#'[0-9a-z]+;
+COLOR_NAME: 'amb' | 'blu' | 'brn' | 'gry' | 'grn' | 'hzl' | 'oth';
+STRING: [a-zA-Z]+;
 NL: '\r'?'\n';
 WS: [\t ]+ -> skip;

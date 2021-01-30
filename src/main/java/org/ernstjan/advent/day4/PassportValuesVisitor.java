@@ -1,65 +1,75 @@
 package org.ernstjan.advent.day4;
 
-public class PassportValuesVisitor extends PassportBaseVisitor<Passport.PassportBuilder> {
-    private final Passport.PassportBuilder builder = Passport.builder();
+import org.ernstjan.advent.day4.PassportTypes.NamedColor;
+import org.ernstjan.advent.day4.PassportTypes.Year;
+
+import static org.ernstjan.advent.day4.Passport.*;
+import static org.ernstjan.advent.day4.PassportTypes.*;
+
+public class PassportValuesVisitor extends PassportBaseVisitor<PassportBuilder> {
+    private final PassportBuilder builder = builder();
 
     @Override
-    public Passport.PassportBuilder visitBirthYear(PassportParser.BirthYearContext ctx) {
-        return builder.birthYear(Integer.parseInt(ctx.NUMBER().getText()));
+    public PassportBuilder visitBirthYear(PassportParser.BirthYearContext ctx) {
+        Year year = ctx.any().isEmpty() ? Year.value(Integer.parseInt(ctx.NUMBER().getText())) : Year.raw(ctx.getText());
+        return builder.birthYear(year);
     }
 
     @Override
-    public Passport.PassportBuilder visitIssueYear(PassportParser.IssueYearContext ctx) {
-        return builder.issueYear(Integer.parseInt(ctx.NUMBER().getText()));
+    public PassportBuilder visitIssueYear(PassportParser.IssueYearContext ctx) {
+        Year year = ctx.any().isEmpty() ? Year.value(Integer.parseInt(ctx.NUMBER().getText())) : Year.raw(ctx.getText());
+        return builder.issueYear(year);
     }
 
     @Override
-    public Passport.PassportBuilder visitExpirationYear(PassportParser.ExpirationYearContext ctx) {
-        return builder.expirationYear(Integer.parseInt(ctx.NUMBER().getText()));
+    public PassportBuilder visitExpirationYear(PassportParser.ExpirationYearContext ctx) {
+        Year year = ctx.any().isEmpty() ? Year.value(Integer.parseInt(ctx.NUMBER().getText())) : Year.raw(ctx.getText());
+        return builder.expirationYear(year);
     }
 
     @Override
-    public Passport.PassportBuilder visitHeight(PassportParser.HeightContext ctx) {
-        if (ctx.UNIT().getText().equals("cm")) {
-            return builder.height(Integer.parseInt(ctx.NUMBER().getText()));
-        } else { // inches
-            int inches = Integer.parseInt(ctx.NUMBER().getText());
-            int centimeters = Math.round((float) inches * 2.54f);
-
-            return builder.height(centimeters);
-        }
+    public PassportBuilder visitHeight(PassportParser.HeightContext ctx) {
+        Height height = ctx.any().isEmpty() ? Height.value(ctx.HEIGHT().getText()) : Height.raw(ctx.getText());
+        return builder.height(height);
     }
 
     @Override
-    public Passport.PassportBuilder visitHairColor(PassportParser.HairColorContext ctx) {
-        return builder.hairColor(ctx.COLOR_HEX().getText());
+    public PassportBuilder visitHairColor(PassportParser.HairColorContext ctx) {
+        HexColor color = ctx.any().isEmpty() ? HexColor.value(ctx.HEX_COLOR().getText()) : HexColor.raw(ctx.getText());
+        return builder.hairColor(color);
     }
 
     @Override
-    public Passport.PassportBuilder visitEyeColor(PassportParser.EyeColorContext ctx) {
-        return builder.eyeColor(ctx.COLOR_NAME().getText());
+    public PassportBuilder visitEyeColor(PassportParser.EyeColorContext ctx) {
+
+        NamedColor color = ctx.any().isEmpty() ? NamedColor.value(ctx.COLOR_NAME().getText()) : NamedColor.raw(ctx.getText());
+        return builder.eyeColor(color);
     }
 
     @Override
-    public Passport.PassportBuilder visitPassportId(PassportParser.PassportIdContext ctx) {
+    public PassportBuilder visitPassportId(PassportParser.PassportIdContext ctx) {
         if (ctx.NUMBER() != null) {
-            return builder.passportId(ctx.NUMBER().getText());
+            return builder.passportId(Id.value(ctx.NUMBER().getText()));
+        } else if (ctx.DIGITS() != null) {
+            return builder.passportId(Id.value(ctx.DIGITS().getText()));
         } else {
-            return builder.passportId(ctx.DIGITS().getText());
+            return builder.passportId(Id.raw(ctx.getText()));
         }
     }
 
     @Override
-    public Passport.PassportBuilder visitCountryId(PassportParser.CountryIdContext ctx) {
+    public PassportBuilder visitCountryId(PassportParser.CountryIdContext ctx) {
         if (ctx.NUMBER() != null) {
-            return builder.countryId(ctx.NUMBER().getText());
+            return builder.countryId(Id.value(ctx.NUMBER().getText()));
+        } else if (ctx.DIGITS() != null) {
+            return builder.countryId(Id.value(ctx.DIGITS().getText()));
         } else {
-            return builder.countryId(ctx.DIGITS().getText());
+            return builder.countryId(Id.raw(ctx.getText()));
         }
     }
 
     @Override
-    protected Passport.PassportBuilder defaultResult() {
+    protected PassportBuilder defaultResult() {
         return builder;
     }
 }

@@ -19,20 +19,38 @@ import org.ernstjan.advent.day7.Graph;
 import org.ernstjan.advent.day8.Computer;
 import org.ernstjan.advent.day8.Debugger;
 import org.ernstjan.advent.day9.Decrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class App {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+@SpringBootApplication
+public class App implements CommandLineRunner {
+    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
+    public static void main(String[] args) {
+        LOG.info("STARTING THE APPLICATION");
+        SpringApplication.run(App.class, args);
+        LOG.info("APPLICATION FINISHED");
+    }
+
+    @Autowired
+    private PassportDatabase passportDatabase;
+
+    @Override
+    public void run(String... args) throws Exception {
+
         InputStream is = App.class.getClassLoader().getResourceAsStream("day1_input.txt");
         ArrayList<Integer> numbers = new ArrayList<>();
 
@@ -79,7 +97,7 @@ public class App {
         /* --- */
         url = App.class.getClassLoader().getResource("day4_input.txt");
         inputStream = CharStreams.fromPath(Path.of(url.toURI()));
-        PassportDatabase passportDatabase = new PassportDatabase();
+//        PassportDatabase passportDatabase = new PassportDatabase();
         passportDatabase.addPassports(inputStream);
         int passports = passportDatabase.size();
         long validPassports = passportDatabase.numberOfValidPassports();

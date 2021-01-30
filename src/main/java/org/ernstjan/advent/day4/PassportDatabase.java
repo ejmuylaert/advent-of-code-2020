@@ -2,16 +2,21 @@ package org.ernstjan.advent.day4;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.springframework.stereotype.Component;
 
-import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.LinkedList;
 import java.util.Optional;
 
+@Component
 public class PassportDatabase {
 
     private final LinkedList<Passport> passports = new LinkedList<>();
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator;
+
+    public PassportDatabase(Validator validator) {
+        this.validator = validator;
+    }
 
     public void addPassports(CharStream inputStream) {
         PassportLexer lexer = new PassportLexer(inputStream);
@@ -39,5 +44,9 @@ public class PassportDatabase {
         return passports.stream()
                 .filter(passport -> validator.validate(passport).size() == 0)
                 .count();
+    }
+
+    public void drop() {
+        passports.clear();
     }
 }

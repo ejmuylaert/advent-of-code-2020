@@ -1,12 +1,43 @@
 package org.ernstjan.advent.day4;
 
 import org.antlr.v4.runtime.CharStreams;
+import org.ernstjan.advent.config.ValidationConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
+@ContextConfiguration(classes = {ValidationConfig.class, PassportDatabaseTest.TestConfig.class})
 class PassportDatabaseTest {
+    @Configuration
+    @ComponentScan(value = "org.ernstjan.advent.day4")
+    static class TestConfig {
+    }
+
+    @Autowired
+    private PassportDatabase database;
+
+    @BeforeEach
+    void clearDatabase() {
+        database.drop();
+    }
+
+    @Test
+    @DisplayName("Parse out a single passport")
+    void parseSinglePassport() {
+        String sample = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd\n" +
+                "byr:1937 iyr:2017 cid:147 hgt:183cm\n";
+
+        database.addPassports(CharStreams.fromString(sample));
+        assertThat(database.size()).isEqualTo(1);
+    }
 
     @Test
     @DisplayName("Parse out complete passports from sample")
@@ -25,7 +56,6 @@ class PassportDatabaseTest {
                 "hcl:#cfa07d eyr:2025 pid:166559648\n" +
                 "iyr:2011 ecl:brn hgt:59in";
 
-        PassportDatabase database = new PassportDatabase();
         database.addPassports(CharStreams.fromString(sample));
         assertThat(database.size()).isEqualTo(2);
     }
@@ -47,7 +77,6 @@ class PassportDatabaseTest {
                 "eyr:2038 hcl:#74454a iyr:2023\n" +
                 "pid:3556412378 byr:2007";
 
-        PassportDatabase database = new PassportDatabase();
         database.addPassports(CharStreams.fromString(sample));
         assertThat(database.size()).isEqualTo(4);
         assertThat(database.numberOfValidPassports()).isEqualTo(0);
@@ -69,9 +98,24 @@ class PassportDatabaseTest {
                 "\n" +
                 "iyr:2010 hgt:60in hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        PassportDatabase database = new PassportDatabase();
         database.addPassports(CharStreams.fromString(sample));
         assertThat(database.size()).isEqualTo(4);
         assertThat(database.numberOfValidPassports()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("Converting height to cm")
+    void lengthConversion() {
+        String sample = "hgt:58in pid:087499704 ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f\n" +
+                "\n" +
+                "hgt:59in pid:087499704 ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f\n" +
+                "\n" +
+                "hgt:76in pid:087499704 ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f\n" +
+                "\n" +
+                "hgt:77in pid:087499704 ecl:grn iyr:2012 eyr:2030 byr:1980 hcl:#623a2f\n";
+
+        database.addPassports(CharStreams.fromString(sample));
+        assertThat(database.size()).isEqualTo(4);
+        assertThat(database.numberOfValidPassports()).isEqualTo(2);
     }
 }

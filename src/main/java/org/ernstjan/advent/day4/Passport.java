@@ -2,31 +2,33 @@ package org.ernstjan.advent.day4;
 
 import lombok.Builder;
 import lombok.Value;
+import org.ernstjan.advent.day4.constraints.Required;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import java.util.Optional;
+
+import static org.ernstjan.advent.day4.PassportTypes.*;
 
 @Value
 @Builder
 public class Passport {
-    @Min(1920) @Max(2002) int birthYear;
-    @Min(2010) @Max(2020) int issueYear;
-    @Min(2020) @Max(2030) int expirationYear;
-    @Min(150) @Max(193) int height; // in cm
-    @Length(min = 7, max = 7) String hairColor; // parser makes sure it only contains hex digits
-    @Pattern(regexp = "amb|blu|brn|gry|grn|hzl|oth") String eyeColor;
-    @Length(min = 9, max = 9) String passportId; // parser makes sure it only contains digits
-    String countryId;
+    @Required @Min(1920) @Max(2002) Year birthYear;
+    @Required @Min(2010) @Max(2020) Year issueYear;
+    @Required @Min(2020) @Max(2030) Year expirationYear;
+    @Required @Min(150) @Max(193) Height height; // in cm
+    @Required @Length(min = 7, max = 7) HexColor hairColor; // parser makes sure it only contains hex digits
+    @Required NamedColor eyeColor; // parse makes sure it contains only valid names
+    @Required @Length(min = 9, max = 9) Id passportId; // parser makes sure it only contains digits
+    Id countryId;
 
     public static class PassportBuilder {
         public Optional<Passport> build() {
-            if (birthYear == 0) return Optional.empty();
-            if (issueYear == 0) return Optional.empty();
-            if (expirationYear == 0) return Optional.empty();
-            if (height == 0) return Optional.empty();
+            if (birthYear == null) return Optional.empty();
+            if (issueYear == null) return Optional.empty();
+            if (expirationYear == null) return Optional.empty();
+            if (height == null) return Optional.empty();
             if (hairColor == null) return Optional.empty();
             if (eyeColor == null) return Optional.empty();
             if (passportId == null) return Optional.empty();

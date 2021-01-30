@@ -1,41 +1,59 @@
 package org.ernstjan.advent.day4;
 
+import org.ernstjan.advent.config.ValidationConfig;
+import org.ernstjan.advent.day4.Passport.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
-import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ernstjan.advent.day4.Passport.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@SpringBootTest
+@ContextConfiguration(classes = ValidationConfig.class)
 class PassportValidationTest {
 
-    private Passport.PassportBuilder builder;
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private PassportBuilder builder;
+    @Autowired
+    private Validator validator;
+
 
     @BeforeEach
     void setupBuilderWithValidValues() {
-        builder = Passport.builder()
-                .birthYear(1980)
-                .issueYear(2020)
-                .expirationYear(2021)
-                .height(180)
-                .hairColor("#123456")
-                .eyeColor("amb")
-                .passportId("012345678")
-                .countryId("202");
+        builder = builder()
+                .birthYear(PassportTypes.Year.value(1980))
+                .issueYear(PassportTypes.Year.value(2020))
+                .expirationYear(PassportTypes.Year.value(2021))
+                .height(PassportTypes.Height.value("180cm"))
+                .hairColor(PassportTypes.HexColor.value("#123456"))
+                .eyeColor(PassportTypes.NamedColor.value("amb"))
+                .passportId(PassportTypes.Id.value("012345678"))
+                .countryId(PassportTypes.Id.value("202"));
+    }
+
+    @Test
+    @DisplayName("Unconverted values are not valid")
+    void unconvertedValuesAreInvalid() {
+        Passport passport = builder.birthYear(PassportTypes.Year.raw("twenty")).build().get();
+
+        assertThat(validator.validate(passport)).hasSize(1);
     }
 
     @ParameterizedTest
     @MethodSource("birthYear")
     @DisplayName("Birth year should between 1920 and 2002")
     void validateBirthYear(int year, int numberOfErrors) {
-        Passport passport = builder.birthYear(year).build().get();
+        Passport passport = builder.birthYear(PassportTypes.Year.value(year)).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
@@ -52,7 +70,7 @@ class PassportValidationTest {
     @MethodSource("issueYear")
     @DisplayName("Issue year should between 2010 and 2020")
     void validateIssueYear(int year, int numberOfErrors) {
-        Passport passport = builder.issueYear(year).build().get();
+        Passport passport = builder.issueYear(PassportTypes.Year.value(year)).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
@@ -69,7 +87,7 @@ class PassportValidationTest {
     @MethodSource("expirationYear")
     @DisplayName("Expiration year should between 2020 and 2030")
     void validateExpirationYear(int year, int numberOfErrors) {
-        Passport passport = builder.expirationYear(year).build().get();
+        Passport passport = builder.expirationYear(PassportTypes.Year.value(year)).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
@@ -86,7 +104,7 @@ class PassportValidationTest {
     @MethodSource("height")
     @DisplayName("Height should be between 150 and 193 cm")
     void validateHeight(int height, int numberOfErrors) {
-        Passport passport = builder.height(height).build().get();
+        Passport passport = builder.height(PassportTypes.Height.value(height + "cm")).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
@@ -103,7 +121,7 @@ class PassportValidationTest {
     @MethodSource("hairColor")
     @DisplayName("hair color should be length 7")
     void validateHairColor(String color, int numberOfErrors) {
-        Passport passport = builder.hairColor(color).build().get();
+        Passport passport = builder.hairColor(PassportTypes.HexColor.value(color)).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
@@ -114,32 +132,13 @@ class PassportValidationTest {
                 arguments("#1234567", 1));
     }
 
-    @ParameterizedTest
-    @MethodSource("eyeColor")
-    @DisplayName("Eye color must be one of 'amb blu brn gry grn hzl oth'")
-    void validateEye(String color, int numberOfErrors) {
-        Passport passport = builder.eyeColor(color).build().get();
-        assertThat(validator.validate(passport)).hasSize(numberOfErrors);
-    }
-
-    static Stream<Arguments> eyeColor() {
-        return Stream.of(
-                arguments("amb", 0),
-                arguments("blu", 0),
-                arguments("brn", 0),
-                arguments("gry", 0),
-                arguments("grn", 0),
-                arguments("hzl", 0),
-                arguments("oth", 0),
-                arguments("OTH", 1),
-                arguments("#123456", 1));
-    }
+    // No need for an eye color test, the lexer takes care of only setting the correct values
 
     @ParameterizedTest
     @MethodSource("passportId")
     @DisplayName("PassportId always a 9 digit number")
     void validatePassportId(String id, int numberOfErrors) {
-        Passport passport = builder.passportId(id).build().get();
+        Passport passport = builder.passportId(PassportTypes.Id.value(id)).build().get();
         assertThat(validator.validate(passport)).hasSize(numberOfErrors);
     }
 
