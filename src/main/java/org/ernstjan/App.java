@@ -118,11 +118,12 @@ public class App implements CommandLineRunner {
 
         /* --- */
         url = App.class.getClassLoader().getResource("day6_input.txt");
-        lines = Files.readAllLines(Path.of(url.toURI()));
+         inputStream = CharStreams.fromPath(Path.of(url.toURI()));
 
         CustomsDeclaration declaration = new CustomsDeclaration();
-        int sum = declaration.declare(lines);
-        long allSum = declaration.declareCommon(lines);
+        declaration.addForm(inputStream);
+        int sum = declaration.declareAll();
+        long allSum = declaration.declareCommon();
         System.out.println("Answer (sum)  : " + sum);
         System.out.println("Answer (common)  : " + allSum);
 
