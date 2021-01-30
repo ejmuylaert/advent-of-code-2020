@@ -7,28 +7,28 @@ import java.util.stream.Collectors;
 
 public class Plane {
 
-    private final LinkedList<Seat> seats = new LinkedList<>();
+    private final LinkedList<BoardingPass> seats = new LinkedList<>();
 
     public void addSeats(List<String> lines) {
-        lines.forEach(l -> seats.add(new Seat(l)));
+        lines.forEach(l -> seats.add(new BoardingPass(l)));
     }
 
     public int highestSeatId() {
         return seats
                 .stream()
-                .map(Seat::id)
+                .map(BoardingPass::id)
                 .reduce(0, Math::max);
     }
 
     public int availableSeat() {
-        List<Seat> seats = this.seats
+        List<BoardingPass> boardingPasses = this.seats
                 .stream()
-                .sorted(Comparator.comparingInt(Seat::id))
+                .sorted(Comparator.comparingInt(BoardingPass::id))
                 .collect(Collectors.toList());
 
 
-        Seat prev = seats.remove(0);
-        for (Seat current: seats) {
+        BoardingPass prev = boardingPasses.remove(0);
+        for (BoardingPass current : boardingPasses) {
             if (prev.id() + 2 == current.id()) {
                 return prev.id() + 1;
             }
