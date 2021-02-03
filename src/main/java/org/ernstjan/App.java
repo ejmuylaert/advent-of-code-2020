@@ -16,7 +16,7 @@ import org.ernstjan.advent.day4.PassportDatabase;
 import org.ernstjan.advent.day5.BoardingPass;
 import org.ernstjan.advent.day5.Plane;
 import org.ernstjan.advent.day6.CustomsDeclaration;
-import org.ernstjan.advent.day7.Graph;
+import org.ernstjan.advent.day7.Bags;
 import org.ernstjan.advent.day8.Computer;
 import org.ernstjan.advent.day8.Debugger;
 import org.ernstjan.advent.day9.Decrypt;
@@ -118,7 +118,7 @@ public class App implements CommandLineRunner {
 
         /* --- */
         url = App.class.getClassLoader().getResource("day6_input.txt");
-         inputStream = CharStreams.fromPath(Path.of(url.toURI()));
+        inputStream = CharStreams.fromPath(Path.of(url.toURI()));
 
         CustomsDeclaration declaration = new CustomsDeclaration();
         declaration.addForm(inputStream);
@@ -129,12 +129,11 @@ public class App implements CommandLineRunner {
 
         /* --- */
         url = App.class.getClassLoader().getResource("day7_input.txt");
-        lines = Files.readAllLines(Path.of(url.toURI()));
+        inputStream = CharStreams.fromPath(Path.of(url.toURI()));
+        Bags bags = Bags.fromCharStream(inputStream);
 
-        Graph graph = new Graph();
-        graph.read(lines);
-        long possibilities = graph.possibilities("shiny gold bag");
-        long containing = graph.contains("shiny gold bag");
+        long possibilities = bags.numberOfPossibleOuterBags("shiny gold");
+        long containing = bags.numberOfContainingBags("shiny gold");
         System.out.println("Answer (gold bag possibilities)  : " + possibilities);
         System.out.println("Answer (gold bag containing)  : " + containing);
 
