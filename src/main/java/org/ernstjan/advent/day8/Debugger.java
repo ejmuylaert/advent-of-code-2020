@@ -1,40 +1,37 @@
 package org.ernstjan.advent.day8;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.ernstjan.advent.day8.Computer.Operation.JMP;
-import static org.ernstjan.advent.day8.Computer.Operation.NOOP;
+import java.util.Optional;
 
 public class Debugger {
-    private final ArrayList<Computer.Instruction> program;
 
-    public Debugger(List<String> lines) {
-        program = new Computer(lines).listing();
-    }
+    static public int fixProgram(List<Instruction> program) {
+        Computer computer = new Computer();
+        program.add(new Terminate());
 
-    public int fix() {
-        for (int i = 0; i < program.size(); i++) {
-            Computer.Instruction instruction = program.get(i);
-            ArrayList<Computer.Instruction> copy = new ArrayList<>(program);
-            // TODO: immutable solution?
-            copy.forEach(in -> in.setExecuted(false));
-
-            switch (instruction.getOp()) {
-                case ACC:
-                    break;
-                case NOOP:
-                    copy.set(i, new Computer.Instruction(JMP, instruction.getValue()));
-                    break;
-                case JMP:
-                    copy.set(i, new Computer.Instruction(NOOP, instruction.getValue()));
-                    break;
+        for (int instructionNumber = 0; instructionNumber < program.size(); instructionNumber++) {
+            Instruction instruction = program.get(instructionNumber);
+            Instruction newInstruction = null;
+            if (instruction instanceof NoOp) {
+                newInstruction = new Jump(((NoOp) instruction).getParameter());
+            } else if (instruction instanceof Jump) {
+                newInstruction = new NoOp(0);
             }
-            Computer computer = new Computer(copy);
-            if (computer.run()) {
-                return computer.getAccumulator();
+
+            if (newInstruction == null) {
+                continue;
             }
+
+            program.set(instructionNumber, newInstruction);
+            Optional<Integer> result = computer.run(program, new Abort());
+
+            if (result.isPresent()) {
+                return result.get();
+            }
+
+            program.set(instructionNumber, instruction);
         }
-        return 0;
+
+        throw new RuntimeException("Could not fix program....");
     }
 }

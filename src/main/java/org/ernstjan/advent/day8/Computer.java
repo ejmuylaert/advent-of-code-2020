@@ -2,110 +2,70 @@ package org.ernstjan.advent.day8;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Optional;
 
 public class Computer {
-    private final ArrayList<Instruction> program = new ArrayList<>();
-    private int accumulator = 0;
 
-    public Computer(List<String> lines) {
-        lines.forEach(line -> {
-                    Scanner lineScanner = new Scanner(line);
-                    String op = lineScanner.next();
-                    String value = lineScanner.next();
+    private final Memory memory = new Memory();
 
-                    switch (op) {
-                        case "nop":
-                            program.add(new Instruction(Operation.NOOP, Integer.parseInt(value)));
-                            break;
-                        case "acc":
-                            program.add(new Instruction(Operation.ACC, Integer.parseInt(value)));
-                            break;
-                        case "jmp":
-                            program.add(new Instruction(Operation.JMP, Integer.parseInt(value)));
-                            break;
-                    }
-                }
-        );
-    }
+    public Optional<Integer> run(List<Instruction> program, Instruction replacement) {
+        memory.loadProgram(program);
 
-    public Computer(ArrayList<Instruction> listing) {
-        program.addAll(listing);
-    }
-
-    public boolean run() {
-        int lineNumber = 0;
-        while (lineNumber < program.size()) {
-            Instruction instruction = program.get(lineNumber);
-            if (instruction.isExecuted()) {
-                return false;
-            }
-
-            switch (instruction.getOp()) {
-                case NOOP:
-                    lineNumber++;
-                    break;
-                case JMP:
-                    lineNumber += instruction.getValue();
-                    break;
-                case ACC:
-                    accumulator += instruction.getValue();
-                    lineNumber++;
-                    break;
-            }
-            instruction.setExecuted(true);
+        boolean running = true;
+        while (running) {
+            Instruction instruction = memory.nextInstruction(replacement);
+            running = instruction.execute(memory);
         }
 
-        return true;
-    }
-
-    public int getAccumulator() {
-        return accumulator;
-    }
-
-    public ArrayList<Instruction> listing() {
-        return program;
-    }
-
-    static class Instruction {
-        private boolean executed = false;
-        private final Operation op;
-        private final int value;
-
-        public Instruction(Operation op, int value) {
-            this.op = op;
-            this.value = value;
-        }
-
-        public void setExecuted(boolean executed) {
-            this.executed = executed;
-        }
-
-        public boolean isExecuted() {
-            return executed;
-        }
-
-        public Operation getOp() {
-            return op;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return "Instruction{" +
-                    "executed=" + executed +
-                    ", op=" + op +
-                    ", value=" + value +
-                    '}';
-        }
-    }
-
-    enum Operation {
-        ACC,
-        JMP,
-        NOOP
+        return memory.accumulator();
     }
 }
+
+class Memory {
+    private int accumulator = 0;
+    private boolean accumulatorIsValid = true;
+    private int instructionPointer = 0;
+    private final ArrayList<Instruction> instructions = new ArrayList<>();
+
+
+    /**
+     * Loads the program into memory and resets the accumulator & instruction pointer
+     *
+     * @param program list of instructions
+     */
+    public void loadProgram(List<Instruction> program) {
+        instructions.clear();
+        instructions.addAll(program);
+
+        accumulator = 0;
+        accumulatorIsValid = true;
+        instructionPointer = 0;
+    }
+
+    Instruction nextInstruction(Instruction replacement) {
+        Instruction instruction = instructions.get(instructionPointer);
+        instructions.set(instructionPointer, replacement);
+        return instruction;
+    }
+
+    Optional<Integer> accumulator() {
+        if (accumulatorIsValid) {
+            return Optional.of(accumulator);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public void increaseAccumulator(int delta) {
+        this.accumulator += delta;
+    }
+
+    public void invalidateAccumulator() {
+        accumulatorIsValid = false;
+    }
+
+    public void advanceInstructionPointer(int delta) {
+        this.instructionPointer += delta;
+    }
+}
+

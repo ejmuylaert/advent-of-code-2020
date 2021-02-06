@@ -17,8 +17,7 @@ import org.ernstjan.advent.day5.BoardingPass;
 import org.ernstjan.advent.day5.Plane;
 import org.ernstjan.advent.day6.CustomsDeclaration;
 import org.ernstjan.advent.day7.Bags;
-import org.ernstjan.advent.day8.Computer;
-import org.ernstjan.advent.day8.Debugger;
+import org.ernstjan.advent.day8.*;
 import org.ernstjan.advent.day9.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,13 +138,12 @@ public class App implements CommandLineRunner {
 
         /* --- */
         url = App.class.getClassLoader().getResource("day8_input.txt");
-        lines = Files.readAllLines(Path.of(url.toURI()));
+        inputStream = CharStreams.fromPath(Path.of(url.toURI()));
 
-        Computer computer = new Computer(lines);
-        computer.run();
-        int accumulator = computer.getAccumulator();
-        Debugger debugger = new Debugger(lines);
-        int fixed = debugger.fix();
+        Computer computer = new Computer();
+        List<Instruction> program = ProgramLoader.load(inputStream);
+        int accumulator = computer.run(program, new Terminate()).get();
+        int fixed = Debugger.fixProgram(program);
         System.out.println("Answer (accumulator) :" + accumulator);
         System.out.println("Answer (fixed) :" + fixed);
 

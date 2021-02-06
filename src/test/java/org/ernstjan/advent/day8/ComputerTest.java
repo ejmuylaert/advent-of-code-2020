@@ -1,47 +1,43 @@
 package org.ernstjan.advent.day8;
 
+import org.antlr.v4.runtime.CharStreams;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ComputerTest {
 
     @Test
-    void sample() {
-        List<String> lines = List.of(
-                "nop +0",
-                "acc +1",
-                "jmp +4",
-                "acc +3",
-                "jmp -3",
-                "acc -99",
-                "acc +1",
-                "jmp -4",
-                "acc +6");
+    void firstSample() {
+        String sample = "nop +0\n" +
+                "acc +1\n" +
+                "jmp +4\n" +
+                "acc +3\n" +
+                "jmp -3\n" +
+                "acc -99\n" +
+                "acc +1\n" +
+                "jmp -4\n" +
+                "acc +6\n";
+        List<Instruction> program = ProgramLoader.load(CharStreams.fromString(sample));
+        Computer computer = new Computer();
 
-        Computer computer = new Computer(lines);
-        boolean success = computer.run();
-        assertFalse(success);
-        assertEquals(computer.getAccumulator(), 5);
+        assertThat(computer.run(program, new Terminate())).contains(5);
     }
 
     @Test
     void changeSample() {
-        List<String> lines = List.of(
-                "nop +0",
-                "acc +1",
-                "jmp +4",
-                "acc +3",
-                "jmp -3",
-                "acc -99",
-                "acc +1",
-                "jmp -4",
-                "acc +6");
-        Debugger debugger = new Debugger(lines);
-        assertEquals(debugger.fix(), 8);
-
+        String sample = "nop +0\n" +
+                "acc +1\n" +
+                "jmp +4\n" +
+                "acc +3\n" +
+                "jmp -3\n" +
+                "acc -99\n" +
+                "acc +1\n" +
+                "jmp -4\n" +
+                "acc +6\n";
+        List<Instruction> program = ProgramLoader.load(CharStreams.fromString(sample));
+        assertThat(Debugger.fixProgram(program)).isEqualTo(8);
     }
 }
